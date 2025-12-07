@@ -1,14 +1,12 @@
 import { useState } from 'react';
+import Layout from './Layout'; 
 
 interface LoginProps {
   onSwitchToRegister: () => void;
 }
 
 const Login = ({ onSwitchToRegister }: LoginProps) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,21 +14,15 @@ const Login = ({ onSwitchToRegister }: LoginProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        alert("Login Successful! Welcome back " + data.user);
-        
+        alert("Login Successful! Welcome " + data.user);
       } else {
         alert("Login Failed: " + (data.error || "Unknown error"));
       }
@@ -41,51 +33,62 @@ const Login = ({ onSwitchToRegister }: LoginProps) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 rounded-lg shadow-md w-96 bg-white">
-        <h2 className="text-2xl font-bold mb-2 text-center text-blue-600">Welcome Back</h2>
-        <p className="text-sm text-center text-gray-500 mb-6">Login to your account</p>
+    <Layout onNavigateToLogin={() => {}} onNavigateToRegister={onSwitchToRegister}>
+      
+      {/* זה הכרטיס הלבן במרכז המסך */}
+      <div 
+        className="bg-white rounded-2xl p-8 sm:p-12 w-full max-w-lg shadow-2xl"
+        style={{boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(59, 130, 246, 0.1)'}}
+      >
+        <h2 className="text-3xl font-bold mb-2 text-center text-thiscount-text-primary">
+          Welcome Back
+        </h2>
+        <p className="text-sm text-center text-gray-500 mb-8">
+          Login to your account
+        </p>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input 
               type="email" name="email" 
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-thiscount-blue-primary focus:border-transparent transition duration-200 outline-none"
+              placeholder="admin@test.com"
               onChange={handleChange} required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input 
               type="password" name="password" 
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-thiscount-blue-primary focus:border-transparent transition duration-200 outline-none"
+              placeholder="••••••••"
               onChange={handleChange} required
             />
           </div>
 
           <button 
             type="submit" 
-            className="w-full text-white p-2 rounded-md bg-blue-600 hover:bg-blue-700 transition duration-200"
+            className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 shadow-lg hover:shadow-xl mt-4"
           >
             Sign In
           </button>
         </form>
 
-        <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+        <div className="mt-8 text-center">
+            <p className="text-gray-600">
                 Don't have an account?{' '}
                 <button 
                     onClick={onSwitchToRegister}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition"
                 >
                     Sign Up
                 </button>
             </p>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
